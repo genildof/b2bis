@@ -11,10 +11,18 @@ logger = logging.getLogger(__name__)
 # Configuração da página
 st.set_page_config(page_title="Meu App", layout="wide")
 
-# Tentativa de conexão com Supabase
+# Verifica se as credenciais estão disponíveis
 try:
+    st.write("Tentando carregar segredos do secrets.toml:")
+    st.write(st.secrets["connections"]["supabase"])
     conn = st.connection("supabase", type=SupabaseConnection)
     logger.info("Conexão com Supabase estabelecida com sucesso!")
+except KeyError as ke:
+    st.error(f"Erro: Credenciais não encontradas no secrets.toml - {ke}")
+    # Fallback: tente passar as credenciais diretamente (para teste)
+    conn = st.connection("supabase", type=SupabaseConnection, 
+                         url="https://seu-projeto.supabase.co", 
+                         key="sua-chave-api-aqui")
 except Exception as e:
     st.error(f"Erro ao conectar ao Supabase: {str(e)}")
     logger.error(f"Erro na conexão: {str(e)}")
