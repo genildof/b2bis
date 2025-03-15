@@ -22,7 +22,7 @@ except KeyError as ke:
     st.error(f"Erro: Credenciais não encontradas no secrets.toml - {ke}")
     st.write("Tentando fallback com credenciais manuais...")
     try:
-        # Substitua pelos valores reais do seu Supabase
+        # Substitua pelos valores reais validados
         conn = st.connection("supabase", type=SupabaseConnection, 
                              url="https://seu-projeto.supabase.co", 
                              key="sua-chave-api-aqui")
