@@ -11,21 +11,28 @@ logger = logging.getLogger(__name__)
 # Configuração da página
 st.set_page_config(page_title="Meu App", layout="wide")
 
-# Verifica se as credenciais estão disponíveis
+# Tentativa de conexão com Supabase
+st.write("Tentando carregar credenciais...")
 try:
-    st.write("Tentando carregar segredos do secrets.toml:")
-    st.write(st.secrets["connections"]["supabase"])
+    secrets = st.secrets["connections"]["supabase"]
+    st.write("Credenciais encontradas no secrets.toml:", secrets.keys())
     conn = st.connection("supabase", type=SupabaseConnection)
     logger.info("Conexão com Supabase estabelecida com sucesso!")
 except KeyError as ke:
     st.error(f"Erro: Credenciais não encontradas no secrets.toml - {ke}")
-    # Fallback: tente passar as credenciais diretamente (para teste)
-    conn = st.connection("supabase", type=SupabaseConnection, 
-                         url="https://seu-projeto.supabase.co", 
-                         key="sua-chave-api-aqui")
+    st.write("Tentando fallback com credenciais manuais...")
+    try:
+        # Substitua pelos valores reais do seu Supabase
+        conn = st.connection("supabase", type=SupabaseConnection, 
+                             url="https://seu-projeto.supabase.co", 
+                             key="sua-chave-api-aqui")
+        st.write("Conexão via fallback bem-sucedida!")
+    except Exception as e:
+        st.error(f"Erro no fallback: {e}")
+        st.stop()
 except Exception as e:
-    st.error(f"Erro ao conectar ao Supabase: {str(e)}")
-    logger.error(f"Erro na conexão: {str(e)}")
+    st.error(f"Erro ao conectar ao Supabase: {e}")
+    logger.error(f"Erro na conexão: {e}")
     st.stop()
 
 # Estado da sessão para autenticação
