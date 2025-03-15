@@ -1,4 +1,4 @@
-# app.py
+# app.py (com mais debug)
 import streamlit as st
 from utils.auth import login, logout
 from st_supabase_connection import SupabaseConnection
@@ -19,15 +19,13 @@ try:
     url = secrets["SUPABASE_URL"]
     key = secrets["SUPABASE_KEY"]
     st.write("SUPABASE_URL:", url)
-    st.write("SUPABASE_KEY (parcial):", key[:10] + "..." + key[-10:])  # Mostra parte da chave por segurança
-    
-    # Teste da conexão
+    st.write("SUPABASE_KEY (parcial):", key[:10] + "..." + key[-10:])  
     conn = st.connection("supabase", type=SupabaseConnection)
     st.write("Conexão com Supabase estabelecida com sucesso!")
     logger.info("Conexão com Supabase OK")
 except Exception as e:
-    st.error(f"Erro ao conectar ao Supabase: {str(e)}")
-    logger.error(f"Erro na conexão: {str(e)}")
+    st.error(f"Erro ao conectar ao Supabase: {e}")
+    logger.error(f"Erro na conexão: {e}")
     st.stop()
 
 # Estado da sessão para autenticação
@@ -40,6 +38,7 @@ def main():
         email = st.text_input("Email")
         password = st.text_input("Senha", type="password")
         if st.button("Entrar"):
+            st.write("Tentando autenticar...")
             user = login(conn, email, password)
             if user:
                 st.session_state["logged_in"] = True
