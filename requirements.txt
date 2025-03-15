@@ -1,0 +1,6 @@
+streamlit
+pandas
+openpyxl
+st-supabase-connection
+supabase
+streamlit-aggrid
