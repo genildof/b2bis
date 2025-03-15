@@ -1,4 +1,4 @@
-# app.py (com mais debug)
+# app.py
 import streamlit as st
 from utils.auth import login, logout
 from st_supabase_connection import SupabaseConnection
@@ -46,9 +46,17 @@ def main():
                 st.success("Login realizado com sucesso!")
                 st.rerun()
             else:
-                st.error("Credenciais inválidas")
+                st.error("Credenciais inválidas ou usuário não encontrado.")
     else:
-        st.sidebar.title(f"Bem-vindo, {st.session_state['user']['email']}")
+        user = st.session_state["user"]
+        # Tenta acessar o email de forma segura
+        try:
+            user_email = user.email if hasattr(user, "email") else "Usuário sem email"
+            st.sidebar.title(f"Bem-vindo, {user_email}")
+        except Exception as e:
+            st.sidebar.title("Bem-vindo, Usuário")
+            st.sidebar.warning(f"Erro ao acessar email: {e}")
+        
         if st.sidebar.button("Sair"):
             logout()
             st.session_state["logged_in"] = False
